@@ -43,6 +43,11 @@ public class ReporteService {
 
     public ReporteResponseDTO crearReporte(ReporteRequestDTO dto) {
         Reporte reporte = reporteMapper.toEntity(dto);
+
+        reporte.setCodigoReporte("REP-" + System.currentTimeMillis());
+        reporte.setFechaGeneracion(java.time.LocalDate.now());
+        reporte.setEstado("GENERADO");
+
         Reporte reporteGuardado = reporteRepository.save(reporte);
 
         return reporteMapper.toDTO(reporteGuardado);
@@ -108,4 +113,4 @@ public class ReporteService {
                 .bodyToMono(String.class)
                 .block();
     }
-}
+} 

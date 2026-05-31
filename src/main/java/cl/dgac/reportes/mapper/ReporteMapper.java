@@ -11,12 +11,9 @@ public class ReporteMapper {
     public Reporte toEntity(ReporteRequestDTO dto) {
         Reporte reporte = new Reporte();
 
-        reporte.setCodigoReporte(dto.getCodigoReporte());
         reporte.setTipoReporte(dto.getTipoReporte());
         reporte.setTitulo(dto.getTitulo());
         reporte.setDescripcion(dto.getDescripcion());
-        reporte.setFechaGeneracion(dto.getFechaGeneracion());
-        reporte.setEstado(dto.getEstado());
         reporte.setIncidenciaId(dto.getIncidenciaId());
         reporte.setPlanVueloId(dto.getPlanVueloId());
         reporte.setUsuarioId(dto.getUsuarioId());
@@ -42,12 +39,9 @@ public class ReporteMapper {
     }
 
     public void updateEntity(Reporte reporte, ReporteRequestDTO dto) {
-        reporte.setCodigoReporte(dto.getCodigoReporte());
         reporte.setTipoReporte(dto.getTipoReporte());
         reporte.setTitulo(dto.getTitulo());
         reporte.setDescripcion(dto.getDescripcion());
-        reporte.setFechaGeneracion(dto.getFechaGeneracion());
-        reporte.setEstado(dto.getEstado());
         reporte.setIncidenciaId(dto.getIncidenciaId());
         reporte.setPlanVueloId(dto.getPlanVueloId());
         reporte.setUsuarioId(dto.getUsuarioId());

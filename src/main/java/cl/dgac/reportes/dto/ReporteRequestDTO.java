@@ -4,13 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.time.LocalDate;
-
 @Data
 public class ReporteRequestDTO {
-
-    @NotBlank(message = "El código del reporte es obligatorio")
-    private String codigoReporte;
 
     @NotBlank(message = "El tipo de reporte es obligatorio")
     private String tipoReporte;
@@ -20,12 +15,6 @@ public class ReporteRequestDTO {
 
     @NotBlank(message = "La descripción es obligatoria")
     private String descripcion;
-
-    @NotNull(message = "La fecha de generación es obligatoria")
-    private LocalDate fechaGeneracion;
-
-    @NotBlank(message = "El estado es obligatorio")
-    private String estado;
 
     @NotNull(message = "El ID de la incidencia es obligatorio")
     private Long incidenciaId;
