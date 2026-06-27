@@ -17,14 +17,16 @@ public class ReporteService {
 
     private final ReporteRepository reporteRepository;
     private final ReporteMapper reporteMapper;
-    private final WebClient.Builder webClientBuilder;
+    
+    // Inyectamos directamente el WebClient configurado con LoadBalanced
+    private final WebClient webClientIncidencias;
 
     public ReporteService(ReporteRepository reporteRepository,
                           ReporteMapper reporteMapper,
-                          WebClient.Builder webClientBuilder) {
+                          WebClient webClientIncidencias) {
         this.reporteRepository = reporteRepository;
         this.reporteMapper = reporteMapper;
-        this.webClientBuilder = webClientBuilder;
+        this.webClientIncidencias = webClientIncidencias;
     }
 
     public List<ReporteResponseDTO> listarReportes() {
@@ -37,8 +39,8 @@ public class ReporteService {
     public ReporteResponseDTO buscarPorId(Long id) {
         Reporte reporte = reporteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reporte no encontrado con ID: " + id));
-
-        return reporteMapper.toDTO(reporte);
+        
+        return reporteMapper.toDTO(reporte); // <- Aquí faltaba el mapeo
     }
 
     public ReporteResponseDTO crearReporte(ReporteRequestDTO dto) {
@@ -73,8 +75,8 @@ public class ReporteService {
     public ReporteResponseDTO buscarPorCodigoReporte(String codigoReporte) {
         Reporte reporte = reporteRepository.findByCodigoReporte(codigoReporte)
                 .orElseThrow(() -> new ResourceNotFoundException("Reporte no encontrado con código: " + codigoReporte));
-
-        return reporteMapper.toDTO(reporte);
+        
+        return reporteMapper.toDTO(reporte); // <- Aquí también faltaba el mapeo
     }
 
     public List<ReporteResponseDTO> listarPorEstado(String estado) {
@@ -106,11 +108,12 @@ public class ReporteService {
     }
 
     public String consultarMicroservicioIncidencias() {
-        return webClientBuilder.build()
+        // Utilizamos el WebClient inyectado con la ruta relativa
+        return webClientIncidencias
                 .get()
-                .uri("http://localhost:8089/api/incidencias")
+                .uri("/api/incidencias")
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
     }
-} 
+}

@@ -4,6 +4,8 @@ import cl.dgac.reportes.dto.ReporteRequestDTO;
 import cl.dgac.reportes.dto.ReporteResponseDTO;
 import cl.dgac.reportes.service.ReporteService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,7 +44,22 @@ public class ReporteController {
         return ResponseEntity.ok(reporteService.buscarPorId(id));
     }
 
-    @Operation(summary = "Crear nuevo reporte", description = "Genera un nuevo documento o informe analítico consolidando datos de la operación.")
+    @Operation(
+            summary = "Crear nuevo reporte", 
+            description = "Genera un nuevo documento o informe analítico consolidando datos de la operación.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Estructura de datos para crear un nuevo reporte",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    name = "Ejemplo de Creación de Reporte",
+                                    summary = "JSON de prueba para reporte de incidente",
+                                    value = "{\n  \"tipoReporte\": \"INCIDENTE\",\n  \"titulo\": \"Análisis Técnico de Infracción en Espacio Aéreo Restringido\",\n  \"descripcion\": \"El drone sobrepasó el límite de altura permitido y perdió señal de control temporalmente.\",\n  \"incidenciaId\": 8,\n  \"planVueloId\": 502,\n  \"usuarioId\": 42\n}"
+                            )
+                    )
+            )
+    )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Reporte creado exitosamente"),
             @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos (ej. código duplicado)")
@@ -55,7 +72,22 @@ public class ReporteController {
         return ResponseEntity.status(HttpStatus.CREATED).body(reporteCreado);
     }
 
-    @Operation(summary = "Actualizar reporte", description = "Modifica el contenido, estado o metadatos de un informe técnico existente.")
+    @Operation(
+            summary = "Actualizar reporte", 
+            description = "Modifica el contenido, estado o metadatos de un informe técnico existente.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Estructura de datos para actualizar el reporte",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    name = "Ejemplo de Actualización de Reporte",
+                                    summary = "JSON de prueba para modificar un reporte",
+                                    value = "{\n  \"tipoReporte\": \"AUDITORIA\",\n  \"titulo\": \"Revisión General Actualizada\",\n  \"descripcion\": \"Se adjuntan nuevos antecedentes al caso original.\",\n  \"incidenciaId\": 8,\n  \"planVueloId\": 502,\n  \"usuarioId\": 42\n}"
+                            )
+                    )
+            )
+    )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Reporte actualizado exitosamente"),
             @ApiResponse(responseCode = "404", description = "Reporte no encontrado"),
