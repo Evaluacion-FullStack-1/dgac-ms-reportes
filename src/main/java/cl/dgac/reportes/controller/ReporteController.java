@@ -160,7 +160,7 @@ public class ReporteController {
         return ResponseEntity.ok(reporteService.buscarPorTitulo(titulo));
     }
 
-    @Operation(summary = "Consultar estado del servicio de Incidencias (WebClient)", description = "Endpoint de integración para verificar la disponibilidad del microservicio de Incidencias.")
+    @Operation(summary = "Consultar estado del servicio de Incidencias", description = "Endpoint de integración que verifica la disponibilidad del microservicio de Incidencias.")
     @ApiResponse(responseCode = "200", description = "Comunicación exitosa con el microservicio de Incidencias")
     @GetMapping("/incidencias")
     public ResponseEntity<String> consultarIncidencias() {

@@ -6,8 +6,9 @@ import cl.dgac.reportes.exception.ResourceNotFoundException;
 import cl.dgac.reportes.mapper.ReporteMapper;
 import cl.dgac.reportes.model.Reporte;
 import cl.dgac.reportes.repository.ReporteRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,15 +19,19 @@ public class ReporteService {
     private final ReporteRepository reporteRepository;
     private final ReporteMapper reporteMapper;
     
-    // Inyectamos directamente el WebClient configurado con LoadBalanced
-    private final WebClient webClientIncidencias;
+    // Inyectamos RestTemplate en lugar de WebClient
+    private final RestTemplate restTemplate;
+
+    // Leemos la URL base desde el application.yml
+    @Value("${incidencias.base-url}")
+    private String incidenciasBaseUrl;
 
     public ReporteService(ReporteRepository reporteRepository,
                           ReporteMapper reporteMapper,
-                          WebClient webClientIncidencias) {
+                          RestTemplate restTemplate) {
         this.reporteRepository = reporteRepository;
         this.reporteMapper = reporteMapper;
-        this.webClientIncidencias = webClientIncidencias;
+        this.restTemplate = restTemplate;
     }
 
     public List<ReporteResponseDTO> listarReportes() {
@@ -40,7 +45,7 @@ public class ReporteService {
         Reporte reporte = reporteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reporte no encontrado con ID: " + id));
         
-        return reporteMapper.toDTO(reporte); // <- Aquí faltaba el mapeo
+        return reporteMapper.toDTO(reporte);
     }
 
     public ReporteResponseDTO crearReporte(ReporteRequestDTO dto) {
@@ -76,7 +81,7 @@ public class ReporteService {
         Reporte reporte = reporteRepository.findByCodigoReporte(codigoReporte)
                 .orElseThrow(() -> new ResourceNotFoundException("Reporte no encontrado con código: " + codigoReporte));
         
-        return reporteMapper.toDTO(reporte); // <- Aquí también faltaba el mapeo
+        return reporteMapper.toDTO(reporte);
     }
 
     public List<ReporteResponseDTO> listarPorEstado(String estado) {
@@ -107,13 +112,12 @@ public class ReporteService {
                 .collect(Collectors.toList());
     }
 
+    // --- MÉTODO CORREGIDO ---
     public String consultarMicroservicioIncidencias() {
-        // Utilizamos el WebClient inyectado con la ruta relativa
-        return webClientIncidencias
-                .get()
-                .uri("/api/incidencias")
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+        // Construimos la URL completa para llamar al otro servicio vía Eureka
+        String urlFinal = incidenciasBaseUrl + "/api/incidencias";
+        
+        // Hacemos la petición GET de forma síncrona
+        return restTemplate.getForObject(urlFinal, String.class);
     }
 }
